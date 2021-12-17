@@ -3,6 +3,7 @@ package io.github.juliocsrf.restapiwithtests.services.impl;
 import io.github.juliocsrf.restapiwithtests.domain.User;
 import io.github.juliocsrf.restapiwithtests.repositories.UserRepository;
 import io.github.juliocsrf.restapiwithtests.services.UserService;
+import io.github.juliocsrf.restapiwithtests.services.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(Integer id) {
         Optional<User> user = repository.findById(id);
-        return user.orElse(null);
+        return user.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado"));
     }
 }

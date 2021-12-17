@@ -1,7 +1,9 @@
 package io.github.juliocsrf.restapiwithtests.resources;
 
 import io.github.juliocsrf.restapiwithtests.domain.User;
+import io.github.juliocsrf.restapiwithtests.domain.dto.UserDTO;
 import io.github.juliocsrf.restapiwithtests.services.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,10 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserResource {
 
     @Autowired
+    private ModelMapper mapper;
+
+    @Autowired
     private UserService userService;
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<User> findById(@PathVariable Integer id) {
-        return ResponseEntity.ok().body(userService.findById(id));
+    public ResponseEntity<UserDTO> findById(@PathVariable Integer id) {
+        return ResponseEntity.ok().body(mapper.map(userService.findById(id), UserDTO.class));
     }
 }

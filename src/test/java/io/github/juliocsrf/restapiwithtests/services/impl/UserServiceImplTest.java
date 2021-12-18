@@ -3,6 +3,7 @@ package io.github.juliocsrf.restapiwithtests.services.impl;
 import io.github.juliocsrf.restapiwithtests.domain.User;
 import io.github.juliocsrf.restapiwithtests.domain.dto.UserDTO;
 import io.github.juliocsrf.restapiwithtests.repositories.UserRepository;
+import io.github.juliocsrf.restapiwithtests.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -46,7 +47,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void whenFindByIdThenReturnAndUserInstance() {
+    void whenFindByIdThenReturnAnUserInstance() {
         when(repository.findById(anyInt())).thenReturn(userOptional);
 
         User response = service.findById(ID);
@@ -56,6 +57,18 @@ class UserServiceImplTest {
         assertEquals(ID, response.getId());
         assertEquals(NAME, response.getName());
         assertEquals(EMAIL, response.getEmail());
+    }
+
+    @Test
+    void whenFindByIdThenReturnAnObjectNotFoundException() {
+        when(repository.findById(anyInt())).thenThrow(new ObjectNotFoundException("Objeto não encontrado"));
+
+        try {
+            service.findById(ID);
+        } catch (Exception ex) {
+            assertEquals(ObjectNotFoundException.class, ex.getClass());
+            assertEquals("Objeto não encontrado", ex.getMessage());
+        }
     }
 
     @Test

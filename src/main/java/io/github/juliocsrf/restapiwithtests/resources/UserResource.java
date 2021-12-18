@@ -1,6 +1,7 @@
 package io.github.juliocsrf.restapiwithtests.resources;
 
 
+import io.github.juliocsrf.restapiwithtests.domain.User;
 import io.github.juliocsrf.restapiwithtests.domain.dto.UserDTO;
 import io.github.juliocsrf.restapiwithtests.services.UserService;
 import org.modelmapper.ModelMapper;
@@ -41,5 +42,11 @@ public class UserResource {
                 .fromCurrentRequest().path("/{id}")
                 .buildAndExpand(userService.create(user).getId()).toUri();
         return ResponseEntity.created(uri).build();
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<UserDTO> update(@PathVariable Integer id, @RequestBody UserDTO userDTO) {
+        userDTO.setId(id);
+        return ResponseEntity.ok().body(mapper.map(userService.update(userDTO), UserDTO.class));
     }
 }

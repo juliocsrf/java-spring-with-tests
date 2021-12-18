@@ -1,6 +1,5 @@
 package io.github.juliocsrf.restapiwithtests.domain.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UserDTO {

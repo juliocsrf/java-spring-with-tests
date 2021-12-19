@@ -3,6 +3,7 @@ package io.github.juliocsrf.restapiwithtests.services.impl;
 import io.github.juliocsrf.restapiwithtests.domain.User;
 import io.github.juliocsrf.restapiwithtests.domain.dto.UserDTO;
 import io.github.juliocsrf.restapiwithtests.repositories.UserRepository;
+import io.github.juliocsrf.restapiwithtests.services.exceptions.DataIntegratyViolationException;
 import io.github.juliocsrf.restapiwithtests.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,18 +17,17 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
 class UserServiceImplTest {
 
-    public static final Integer ID                      = 1;
-    public static final String NAME                     = "Julio";
-    public static final String EMAIL                    = "juliocsrmf@gmail.com";
-    public static final String PASSWORD                 = "123";
-    public static final String OBJETO_NAO_ENCONTRADO    = "Objeto não encontrado";
+    public static final Integer ID = 1;
+    public static final String NAME = "Julio";
+    public static final String EMAIL = "juliocsrmf@gmail.com";
+    public static final String PASSWORD = "123";
+    public static final String OBJETO_NAO_ENCONTRADO = "Objeto não encontrado";
     public static final int INDEX = 0;
 
     @InjectMocks
@@ -105,7 +105,32 @@ class UserServiceImplTest {
     }
 
     @Test
-    void update() {
+    void whenCreateThenReturnAnDataIntegratyViolationException() {
+        when(repository.findByEmail(anyString())).thenReturn(userOptional);
+
+        try {
+            userOptional.get().setId(2);
+            service.create(userDTO);
+
+            throw new Exception();
+        } catch (Exception exception) {
+            assertEquals(DataIntegratyViolationException.class, exception.getClass());
+            assertEquals("E-mail já cadastrado no sistema", exception.getMessage());
+        }
+    }
+
+    @Test
+    void whenUpdateThenReturnSuccess() {
+        when(repository.save(any())).thenReturn(user);
+
+        User response = service.update(userDTO);
+
+        assertNotNull(response);
+        assertEquals(User.class, response.getClass());
+        assertEquals(ID, response.getId());
+        assertEquals(NAME, response.getName());
+        assertEquals(EMAIL, response.getEmail());
+        assertEquals(PASSWORD, response.getPassword());
     }
 
     @Test

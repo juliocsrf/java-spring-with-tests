@@ -1,0 +1,11 @@
+version: "3.7"
+services:
+    rest-api-with-tests:
+        container_name: rest-api-with-tests
+        image: openjdk:17-jdk-alpine
+        volumes:
+            -   ./target/rest-api-with-tests-0.0.1-SNAPSHOT.jar:/rest-api-with-tests-0.0.1-SNAPSHOT.jar
+        entrypoint: ["java","-jar","/rest-api-with-tests-0.0.1-SNAPSHOT.jar"]
+        restart: unless-stopped
+        ports:
+            - "8000:8080"
